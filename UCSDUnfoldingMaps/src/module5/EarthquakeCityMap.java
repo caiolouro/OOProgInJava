@@ -20,8 +20,8 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author Caio Louro
+ * Date: October 11, 2015
  * */
 public class EarthquakeCityMap extends PApplet {
 	
@@ -145,7 +145,13 @@ public class EarthquakeCityMap extends PApplet {
 	// 
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
-		// TODO: Implement this method
+		for(Marker marker : markers) {
+			if(marker.isInside(map, mouseX, mouseY) && lastSelected == null) {
+				marker.setSelected(true);
+				lastSelected = (CommonMarker) marker;
+				break;
+			}
+		}
 	}
 	
 	/** The event handler for mouse clicks
@@ -156,9 +162,38 @@ public class EarthquakeCityMap extends PApplet {
 	@Override
 	public void mouseClicked()
 	{
-		// TODO: Implement this method
-		// Hint: You probably want a helper method or two to keep this code
-		// from getting too long/disorganized
+		if(lastClicked != null) {
+			unhideMarkers();
+			lastClicked = null;
+		}
+		else {
+			for(Marker marker : quakeMarkers) {
+				if(marker.isInside(map, mouseX, mouseY)) {
+					lastClicked = (CommonMarker) marker;
+					
+					for(Marker quakeMarker : quakeMarkers) if(quakeMarker != marker) quakeMarker.setHidden(true);
+					for(Marker cityMarker : cityMarkers) {
+						if(cityMarker.getDistanceTo(marker.getLocation()) > ((EarthquakeMarker) marker).threatCircle()) {
+							cityMarker.setHidden(true);
+						}
+					}
+				}
+			}
+			
+			for(Marker marker : cityMarkers) {
+				if(marker.isInside(map, mouseX, mouseY)) {
+					lastClicked = (CommonMarker) marker;
+					
+					for(Marker cityMarker : cityMarkers) if(cityMarker != marker) cityMarker.setHidden(true);
+					
+					for(Marker quakeMarker : quakeMarkers) {
+						if(marker.getDistanceTo(quakeMarker.getLocation()) > ((EarthquakeMarker) quakeMarker).threatCircle()) {
+							quakeMarker.setHidden(true);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	

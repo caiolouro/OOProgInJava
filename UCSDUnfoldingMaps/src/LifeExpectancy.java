@@ -35,6 +35,24 @@ public class LifeExpectancy extends PApplet {
 
 	public void draw() {
 		map.draw();
+		drawButtons();
+	}
+	
+	private void drawButtons() {
+		fill(255, 255, 255);
+		rect(100, 100, 25, 25);
+		
+		fill(100, 100, 100);
+		rect(100, 150, 25, 25);
+	}
+	
+	public void keyPressed() {
+		if(key == 'w') background(255, 255, 255);
+	}
+	
+	public void mouseReleased() {
+		if(mouseX > 100 && mouseX < 125 && mouseY > 100 && mouseY < 125) background(255, 255, 255);
+		else if(mouseX > 100 && mouseX < 125 && mouseY > 150 && mouseY < 175) background(100, 100, 100);
 	}
 	
 	private Map<String, Float> loadLifeExpectancyFromCSV(String fileName) {
