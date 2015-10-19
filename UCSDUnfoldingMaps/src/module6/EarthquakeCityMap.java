@@ -1,7 +1,9 @@
 package module6;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -61,6 +63,8 @@ public class EarthquakeCityMap extends PApplet {
 	// A List of country markers
 	private List<Marker> countryMarkers;
 	
+	private List<Marker> airportList;
+	
 	// NEW IN MODULE 5
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
@@ -85,7 +89,7 @@ public class EarthquakeCityMap extends PApplet {
 		//earthquakesURL = "test2.atom";
 		
 		// Uncomment this line to take the quiz
-		//earthquakesURL = "quiz2.atom";
+		earthquakesURL = "quiz2.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -117,13 +121,24 @@ public class EarthquakeCityMap extends PApplet {
 
 	    // could be used for debugging
 	    printQuakes();
+	    sortAndPrint(30);
+	    
+		// get features from airport data
+		List<PointFeature> features = ParseFeed.parseAirports(this, "airports.dat");
+		airportList = new ArrayList<Marker>();
+		
+		for(PointFeature feature : features) {
+			AirportMarker m = new AirportMarker(feature);
+			
+			if(m.getCountry().equals("\"Brazil\"")) airportList.add(m);
+		}
 	 		
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
 	    //           for their geometric properties
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
-	    
+	    map.addMarkers(airportList);
 	    
 	}  // End setup
 	
@@ -136,9 +151,14 @@ public class EarthquakeCityMap extends PApplet {
 	}
 	
 	
-	// TODO: Add the method:
-	//   private void sortAndPrint(int numToPrint)
-	// and then call that method from setUp
+	private void sortAndPrint(int numToPrint) {
+		Object[] aQuakeMarkers = quakeMarkers.toArray();
+		Arrays.sort(aQuakeMarkers);
+		
+		for(int i = 0; i < Math.min(aQuakeMarkers.length, numToPrint); i++) {
+			System.out.println(aQuakeMarkers[i].toString());
+		}
+	}
 	
 	/** Event handler that gets called automatically when the 
 	 * mouse moves.
@@ -323,7 +343,24 @@ public class EarthquakeCityMap extends PApplet {
 		line(centerx-8, centery-8, centerx+8, centery+8);
 		line(centerx-8, centery+8, centerx+8, centery-8);
 		
+		fill(255, 250, 240);
 		
+		int xbase2 = 25;
+		int ybase2 = 320;
+				
+		rect(xbase2, ybase2, 150, 150);
+		
+		fill(0);
+		textAlign(LEFT, CENTER);
+		textSize(12);
+		text("Airports Key", xbase2+25, ybase2+25);
+		
+		fill(color(0, 255, 0));
+		ellipse(xbase2+35, ybase2+50, 5, 5);
+		
+		textAlign(LEFT, CENTER);
+		fill(0, 0, 0);
+		text("In Brazil", xbase2+45, ybase2+50);
 	}
 
 	
