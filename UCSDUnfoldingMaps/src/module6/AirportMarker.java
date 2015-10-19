@@ -24,10 +24,8 @@ public class AirportMarker extends CommonMarker {
 	
 	@Override
 	public void drawMarker(PGraphics pg, float x, float y) {
-		pg.fill(11);
+		pg.fill(0, 255, 0);
 		pg.ellipse(x, y, 5, 5);
-		
-		
 	}
 
 	@Override
@@ -36,6 +34,11 @@ public class AirportMarker extends CommonMarker {
 		
 		// show routes
 		
+		
+	}
+	
+	public String getCountry() {
+		return (String) getProperty("country");	
 		
 	}
 	
